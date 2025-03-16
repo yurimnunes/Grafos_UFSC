@@ -1,0 +1,11 @@
+# pycache
+__pycache__
+
+# Ignorar virtualenv do Python
+venv/
+.venv/
+
+# Ignorar ambientes do Conda
+env/
+.conda/
+conda-meta/
