@@ -25,6 +25,7 @@ class Grafo:
         return self.vizinhos_dict[v]
     
     def haAresta(self, u, v):
+        # considerando que começa em 1 e nao 0
         if self.matrix[u-1][v-1] != float('inf'):
             return True
         return False
@@ -47,16 +48,20 @@ class Grafo:
 
             # infinito se nao tem conexão
             self.matrix = [[ float('inf') for _ in range(n_vertices)] for _ in range(n_vertices)]
+            # vertices
+            print('Vertices')
             for i in range(1, n_vertices + 1):
                 line = lines[i].split()
                 print(line)
                 self.vertices.append(int(line[0]))
+                # numero: rotulo
                 self.rotulo_dict[int(line[0])] = line[1]
 
                 # vizinhos # aproveitei o loob pra criacao
                 self.vizinhos_dict[int(line[0])] = []
             # edges
-            for i in range(n_vertices + 2, len(lines)-1):
+            print('Arestas')
+            for i in range(n_vertices + 2, len(lines)):
 
                 #####
                 line = lines[i].split()
@@ -70,6 +75,8 @@ class Grafo:
 
                 self.arestas.append((a, b))
                 self.matrix[a-1][b-1] = peso
+                # é não dirigido
+                self.matrix[b-1][a-1] = peso
                 self.n_arestas += 1
             
 
@@ -77,13 +84,26 @@ class Grafo:
                 
 if __name__ == "__main__":
     g = Grafo("ContemCicloEuleriano2.net")
-    print(g.qtdVertices())
-    print(g.qtdArestas())
-    print(g.grau(1))
-    print(g.rotulo(1))
-    print(g.vizinhos(1))
-    print(g.haAresta(1, 2))
-    print(g.peso(1, 2))
+    print("##########################")
+    print(" FUNÇÕES DE TESTE")
+    print('quantidade de vertices:', g.qtdVertices())
+    print('quantidade de arestas:', g.qtdArestas())
+    print('grau do vertice 1:', g.grau(1))
+    print('rotulo do vertice 1:', g.rotulo(1))
+    print('vizinhos do vertice 1:', g.vizinhos(1))
+    print('ha aresta 1 2:', g.haAresta(1, 2))
+    print('peso da aresta 1 2:', g.peso(1, 2))
+    print("Verificar matrix")
+    # ta feio, só quis mostrar
+    arr =  [i*1.0 for i in range(1,10)]
+    for i in range(0,g.qtdVertices()+1):
+        print(f'{i} ', end= " "*3) 
+    else:
+        print()
+    i = 1
+    for line in g.matrix:
+        print(i, line)
+        i += 1
                 
 
 
