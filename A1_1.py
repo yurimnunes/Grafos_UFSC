@@ -51,14 +51,19 @@ class Grafo:
             # vertices
             print('Vertices')
             for i in range(1, n_vertices + 1):
-                line = lines[i].split()
+                line = lines[i]
+                for j in range(1, len(line)):
+                    if line[j] == ' ': 
+                        number = int(line[:j])
+                        name = line[j+1:]
+                        break
                 print(line)
-                self.vertices.append(int(line[0]))
+                self.vertices.append(number)
                 # numero: rotulo
-                self.rotulo_dict[int(line[0])] = line[1]
+                self.rotulo_dict[number] = name
 
                 # vizinhos # aproveitei o loob pra criacao
-                self.vizinhos_dict[int(line[0])] = []
+                self.vizinhos_dict[number] = []
             # edges
             print('Arestas')
             for i in range(n_vertices + 2, len(lines)):
