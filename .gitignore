@@ -9,3 +9,5 @@ venv/
 env/
 .conda/
 conda-meta/
+
+teste.py
