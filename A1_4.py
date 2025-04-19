@@ -3,12 +3,9 @@ def bellman_ford(g, s, w):
     pred = []
 
     for v in range(g.qtdVertices() + 1):
-        dist.append(float("inf"))  # usar float infinito
-        pred.append(None)  # usar None como nulo
+        dist.append(float("inf"))
+        pred.append(None)
     dist[s] = 0
-
-    # print(dist)
-    # print(pred)
 
     i = 1
     while i < g.qtdVertices():
