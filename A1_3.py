@@ -1,14 +1,15 @@
-def encontra_ciclo_euleriano(g, s):
+from A1_1 import Grafo
+import sys
+
+
+def encontra_ciclo_euleriano(g):
     stack = []
     ciclo = []
     arestas = set(g.arestas)
     vizinhos = {v: list(g.vizinhos(v)) for v in g.vertices}
-    v = s
+    v = 1
 
     while len(stack) > 0 or len(vizinhos[v]) > 0:
-        print(f"Visitando: {v}, vizinhos: {vizinhos[v]}")
-        print(f"Arestas restantes: {len(arestas)}")
-
         if len(vizinhos[v]) == 0:
             ciclo.append(v)
             v = stack.pop()
@@ -33,3 +34,17 @@ def encontra_ciclo_euleriano(g, s):
         print(1)
         ciclo_str = ",".join(map(str, ciclo))
         print(ciclo_str)
+
+
+def main():
+    if len(sys.argv) != 2:
+        print("Uso A1_3 (Encontrar Ciclo Euleriano): python3 A1_4.py <nome_arquivo>")
+        sys.exit(1)
+
+    grafo_nome = sys.argv[1]
+    g = Grafo(grafo_nome)
+    encontra_ciclo_euleriano(g)
+
+
+if __name__ == "__main__":
+    main()
