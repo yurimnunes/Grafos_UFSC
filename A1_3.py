@@ -1,8 +1,17 @@
 from A1_1 import Grafo
 import sys
 
+def verifica_grau_par(g):
+    for v in g.vertices:
+        if len(g.vizinhos(v)) % 2 != 0:  # Verifica se o grau é ímpar
+            return False
+    return True
 
 def encontra_ciclo_euleriano(g):
+    if not verifica_grau_par(g):
+        print(0)
+        return
+
     stack = []
     ciclo = []
     arestas = set(g.arestas)
@@ -34,7 +43,6 @@ def encontra_ciclo_euleriano(g):
         print(1)
         ciclo_str = ",".join(map(str, ciclo))
         print(ciclo_str)
-
 
 def main():
     if len(sys.argv) != 2:
