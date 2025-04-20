@@ -1,54 +1,79 @@
 from A1_1 import Grafo
+import math
 import sys
 
+def dijkstra(g: Grafo, s: int):
+    n = g.qtdVertices()
+    distancias = [math.inf] * n
+    predecessores = [None] * n
+    visitados = [False] * n
 
-def bellman_ford(g, s):
-    dist = []
-    pred = []
-    w = g.matrix
+    distancias[s] = 0
 
-    for v in range(g.qtdVertices() + 1):
-        dist.append(float("inf"))
-        pred.append(None)
-    dist[s] = 0
+    for _ in range(n - 1):
+        u = vertice_mais_proximo(distancias, visitados)
+        if u == -1:
+            break  # Todos os acessíveis já foram visitados
+        visitados[u] = True
 
-    i = 1
-    while i < g.qtdVertices():
-        for u, v in g.arestas:
-            if dist[u] + w[u - 1][v - 1] < dist[v]:
-                dist[v] = dist[u] + w[u - 1][v - 1]
-                pred[v] = u
-        i += 1
+        for viz in g.vizinhos(u + 1):
+            v = viz - 1
+            if not visitados[v] and g.haAresta(u + 1, viz):
+                peso = g.peso(u + 1, viz)
+                nova_dist = distancias[u] + peso
+                if nova_dist < distancias[v]:
+                    distancias[v] = nova_dist
+                    predecessores[v] = u
 
-    for u, v in g.arestas:
-        if dist[u] + w[u - 1][v - 1] < dist[v]:
-            print("Tem ciclo negativo.")
+    exibir_caminhos(distancias, predecessores)
+    return distancias, predecessores
 
-    for v in g.vertices:
-        pred_list = []
-        if dist[v] != float("inf"):
-            u = v
-            while u is not None:
-                pred_list.insert(0, u)
-                u = pred[u]
-        lista_str = ",".join(map(str, pred_list))
-        print(f"{v}: {lista_str}; d= {dist[v]}")
+def vertice_mais_proximo(distancias, visitados):
+    minimo, indice = math.inf, -1
+    for i, d in enumerate(distancias):
+        if not visitados[i] and d < minimo:
+            minimo, indice = d, i
+    return indice
 
+def exibir_caminhos(distancias, predecessores):
+    for v, d in enumerate(distancias):
+        if d == math.inf:
+            print(f"{v + 1}: ; d= inf")
+            continue
+
+        caminho = []
+        atual = v
+        while atual is not None:
+            caminho.append(atual + 1)
+            atual = predecessores[atual]
+        caminho.reverse()
+
+        caminho_str = ",".join(map(str, caminho))
+        print(f"{v + 1}: {caminho_str}; d= {int(d)}")
 
 def main():
     if len(sys.argv) != 3:
-        print(
-            "Uso A1_4 (BellMan-Ford): python3 A1_4.py <nome_arquivo> <vertice_inicial>"
-        )
+        print("Uso A1_4 (Dijkstra): python3 A1_2.py <arquivo_de_entrada> <vértice_de_origem>")
         sys.exit(1)
 
-    grafo_nome = sys.argv[1]
-    v = int(sys.argv[2])
+    arquivo_entrada = sys.argv[1]
+    try:
+        s = int(sys.argv[2]) - 1
+    except ValueError:
+        sys.exit(1)
 
-    g = Grafo(grafo_nome)
+    try:
+        g = Grafo(arquivo_entrada)
 
-    bellman_ford(g, v)
+        if not (0 <= s < g.qtdVertices()):
+            sys.exit(1)
 
+        dijkstra(g, s)
 
-if __name__ == "__main__":
+    except FileNotFoundError:
+        sys.exit(1)
+    except ValueError as e:
+        sys.exit(1)
+
+if __name__ == '__main__':
     main()

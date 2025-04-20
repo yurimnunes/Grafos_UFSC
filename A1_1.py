@@ -34,57 +34,93 @@ class Grafo:
         return self.matrix[u - 1][v - 1]
 
     def ler(self, arquivo):
+        # Formato esperado do arquivo:
         # *vertices n
-        # 1 rotulo_de_1
-        # 2 rotulo_de_2
+        # 1 rotulo_1
+        # 2 rotulo_2
+        # ...
         # *edges
-        # a b valor_do_peso
-        # a c valor_do_peso
+        # a b peso
+        # a c peso
         with open(arquivo, "r") as f:
             lines = f.readlines()
+
+        # Lê o número de vértices
+        if not lines or not lines[0].startswith("*vertices"):
+            raise ValueError("Arquivo mal formatado: linha 0 deveria conter '*vertices n'")
+        
+        try:
             n_vertices = int(lines[0].split()[-1])
-            # v = [1,2,3,4...]
-            self.n_vertices = n_vertices
+        except ValueError:
+            raise ValueError("Número de vértices inválido")
 
-            # infinito se nao tem conexão
-            self.matrix = [
-                [float("inf") for _ in range(n_vertices)] for _ in range(n_vertices)
-            ]
-            # vertices
-            # print("Vertices")
-            for i in range(1, n_vertices + 1):
-                line = lines[i]
-                for j in range(1, len(line)):
-                    if line[j] == " ":
-                        number = int(line[:j])
-                        name = line[j + 1 :]
-                        break
-                # print(line)
-                self.vertices.append(number)
-                # numero: rotulo
-                self.rotulo_dict[number] = name
+        self.n_vertices = n_vertices
+        self.vertices = []
+        self.arestas = []
+        self.rotulo_dict = {}
+        self.vizinhos_dict = {}
+        self.n_arestas = 0
 
-                # vizinhos # aproveitei o loob pra criacao
-                self.vizinhos_dict[number] = []
-            # edges
-            # print("Arestas")
-            for i in range(n_vertices + 2, len(lines)):
+        # Inicializa a matriz de adjacência com infinito
+        self.matrix = [
+            [float("inf") for _ in range(n_vertices)] for _ in range(n_vertices)
+        ]
 
-                #####
-                line = lines[i].split()
-                # print(line)
-                a = int(line[0])
-                b = int(line[1])
-                peso = float(line[2])
+        # Lê os vértices (linhas de 1 até n_vertices)
+        for i in range(1, n_vertices + 1):
+            line = lines[i].strip()
+            if not line:
+                continue
 
-                self.vizinhos_dict[a].append(b)
-                self.vizinhos_dict[b].append(a)
+            parts = line.split(maxsplit=1)
+            if len(parts) != 2:
+                continue  # linha mal formatada
 
-                self.arestas.append((a, b))
-                self.matrix[a - 1][b - 1] = peso
-                # é não dirigido
-                self.matrix[b - 1][a - 1] = peso
-                self.n_arestas += 1
+            try:
+                numero = int(parts[0])
+                rotulo = parts[1]
+            except ValueError:
+                continue
+
+            self.vertices.append(numero)
+            self.rotulo_dict[numero] = rotulo
+            self.vizinhos_dict[numero] = []
+
+        # Lê as arestas (a partir da linha '*edges')
+        # Procura a linha que começa com '*edges'
+        inicio_arestas = -1
+        for idx, line in enumerate(lines):
+            if line.strip().lower() == "*edges":
+                inicio_arestas = idx + 1
+                break
+
+        if inicio_arestas == -1:
+            raise ValueError("Arquivo não contém seção '*edges'")
+
+        # Processa as arestas
+        for i in range(inicio_arestas, len(lines)):
+            line = lines[i].strip()
+            if not line:
+                continue
+
+            tokens = line.split()
+            if len(tokens) < 3:
+                continue  # pula linhas incompletas
+
+            try:
+                a = int(tokens[0])
+                b = int(tokens[1])
+                peso = float(tokens[2])
+            except ValueError:
+                continue
+
+            self.vizinhos_dict[a].append(b)
+            self.vizinhos_dict[b].append(a)
+
+            self.arestas.append((a, b))
+            self.matrix[a - 1][b - 1] = peso
+            self.matrix[b - 1][a - 1] = peso
+            self.n_arestas += 1
 
 
 # if __name__ == "__main__":
