@@ -14,29 +14,28 @@ from A1_1 import Grafo
 
 def BFS(grafo: Grafo, origem: int):
     n_nodes = grafo.qtdVertices()
-    # Para consulta é mais rapido
-    marked = [False for i in range(n_nodes + 1)]
-    visitados = []
-    fila = []
-    fila.append(origem)
+    marked = [False for _ in range(n_nodes + 1)]
+    fila = [[origem]]  # Cada elemento da fila representa um nível
     marked[origem] = True
-    visitados.append(origem)
-    i = 0
-    print(f"{i}: {origem}")
-    while len(fila) != 0:
-        u = fila.pop(0)
-        temp = ""
-        for v in grafo.vizinhos(u):
-            # temp+= str(v) + ','
-            if marked[v] == False:
-                marked[v] = True
-                visitados.append(v)
-                fila.append(v)
-                temp += str(v) + ","
-        if len(temp) != 0:
-            i += 1
-            print(f"{i}: {temp[:-1]}")
-    return visitados
+    nivel = 0
+
+    while fila:
+        vertices_nivel = fila.pop(0)
+        if not vertices_nivel:  # Nível vazio, encerra
+            break
+        # Formata e imprime o nível atual (acho q funciona)
+        print(f"{nivel}: {', '.join(map(str, vertices_nivel))}")
+        # Coleta os vértices do próximo nível
+        proximo_nivel = []
+        for u in vertices_nivel:
+            for v in grafo.vizinhos(u):
+                if not marked[v]:
+                    marked[v] = True
+                    proximo_nivel.append(v)
+        # se houver vertices adiciona proximo nivel
+        if proximo_nivel:
+            fila.append(proximo_nivel)
+            nivel += 1
 
 
 def main():
