@@ -1,4 +1,6 @@
 from Grafo_Dirigido import Grafo
+
+
 def ordenacao_topologica(grafo):
     visitados = set()
     ordem = []
@@ -32,6 +34,7 @@ def ordenacao_topologica(grafo):
 
 def main():
     import sys
+
     if len(sys.argv) < 2:
         print("Uso: python3 ordenacao_topologica.py arquivo_grafo")
         return
@@ -45,10 +48,11 @@ def main():
     ordem = ordenacao_topologica(grafo)
     ordem_name = [grafo.rotulo(v) for v in ordem]
     if ordem is None:
-        print("O grafo contém um ciclo, não é possível realizar a ordenação topológica.")
+        print(
+            "O grafo contém um ciclo, não é possível realizar a ordenação topológica."
+        )
     else:
-        print("Ordenação topológica:")
-        print(" → ".join(map(str, ordem_name)))
+        print(", ".join(map(str, ordem_name)))
 
 
 if __name__ == "__main__":
