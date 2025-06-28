@@ -4,6 +4,7 @@ class Grafo:
         self.vertices = []
         self.arestas = []
         self.rotulo_dict = dict()
+        self.rotulo_to_index = dict()
         self.vizinhos_dict = dict()
         self.n_vertices = 0
         self.n_arestas = 0
@@ -21,6 +22,8 @@ class Grafo:
 
     def rotulo(self, v):
         return self.rotulo_dict[v]
+    def rotuloToIndex(self, rotulo):
+        return self.rotulo_to_index[rotulo]
 
     def vizinhos(self, v):
         return self.vizinhos_dict[v]
@@ -85,6 +88,7 @@ class Grafo:
 
             self.vertices.append(numero)
             self.rotulo_dict[numero] = rotulo
+            self.rotulo_to_index[rotulo] = numero
             self.vizinhos_dict[numero] = []
 
         # Lê as arestas (a partir da linha '*edges')
